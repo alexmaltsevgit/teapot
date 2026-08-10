@@ -40,6 +40,18 @@
             .url = "git+https://github.com/zig-gamedev/zglfw#4ff80e5e747da87b09ea30cb14f54fa96cac4f68",
             .hash = "zglfw-0.10.0-dev-zgVDNNu5IQAk-UK7gIg0LWMmMzxj4sK9xCSTisLhjgI1",
         },
+        .zstbi = .{
+            .url = "git+https://github.com/zig-gamedev/zstbi#3813f5f113b26f644cfa01a30155cc76b3526e91",
+            .hash = "zstbi-0.11.0-dev-L0Ea_3GWBwAh7m54XX055vwLKPTPij5hyqyeq92MXPE2",
+        },
+        .zmath = .{
+            .url = "git+https://github.com/zig-gamedev/zmath.git#9e42b04a24c970a297b365f3d3022f92dbf3219d",
+            .hash = "zmath-0.11.0-dev-wjwivTwtAwDOjG2_KGP-HLtHrONfsFfHttalmxFAGVAK",
+        },
+        .zig_assimp = .{
+            .url = "git+https://github.com/felixuxx/z-assimp.git#2b3fd24a0052a41b4d25708b325c30e9dc7b63d3",
+            .hash = "zig_assimp-6.0.5--G7jvk2DAgA5kA71cD_hK0PW6JSrWqcG2VJH-7uAGZ3p",
+        },
     },
     .paths = .{
         "build.zig",
