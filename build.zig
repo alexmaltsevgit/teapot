@@ -28,6 +28,12 @@ pub fn build(b: *std.Build) void {
     const zmath = b.dependency("zmath", .{});
     exe.root_module.addImport("zmath", zmath.module("root"));
 
+    const interface_dep = b.dependency("interface", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    exe.root_module.addImport("interface", interface_dep.module("interface"));
+
     if (target.result.os.tag != .emscripten) {
         exe.root_module.linkLibrary(zglfw.artifact("glfw"));
     }

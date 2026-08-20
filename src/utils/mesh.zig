@@ -146,62 +146,62 @@ pub fn deinit(self: *Self) void {
     }
 }
 
-pub fn draw(
-    self: *Self,
-    world: zm.Mat,
-    materials: std.MultiArrayList(engine.Material).Slice,
-    textures: std.MultiArrayList(engine.Texture).Slice,
-) !void {
-    if (self.indices.items.len == 0) return;
+// pub fn draw(
+//     self: *Self,
+//     world: zm.Mat,
+//     materials: std.MultiArrayList(engine.Material).Slice,
+//     textures: std.MultiArrayList(engine.Texture).Slice,
+// ) !void {
+//     if (self.indices.items.len == 0) return;
 
-    const material = if (self.material_idx != null and self.material_idx.? < materials.len) &materials.get(self.material_idx.?) else &self.fallback_material;
+//     const material = if (self.material_idx != null and self.material_idx.? < materials.len) &materials.get(self.material_idx.?) else &self.fallback_material;
 
-    var texture_count: u32 = 0;
+//     var texture_count: u32 = 0;
 
-    var it = material.textures.iterator();
-    while (it.next()) |entry| {
-        const texture_type = entry.key_ptr.*;
-        const texture_indices = entry.value_ptr.*;
+//     var it = material.textures.iterator();
+//     while (it.next()) |entry| {
+//         const texture_type = entry.key_ptr.*;
+//         const texture_indices = entry.value_ptr.*;
 
-        if (texture_indices.items.len == 0) continue;
-        if (texture_count >= 32) break;
+//         if (texture_indices.items.len == 0) continue;
+//         if (texture_count >= 32) break;
 
-        const texture_idx = texture_indices.items[0];
+//         const texture_idx = texture_indices.items[0];
 
-        ogl.activeTexture(@enumFromInt(@intFromEnum(ogl.TextureUnit.texture_0) + texture_count));
-        ogl.bindTexture(.texture_2d, textures.get(texture_idx).id);
+//         ogl.activeTexture(@enumFromInt(@intFromEnum(ogl.TextureUnit.texture_0) + texture_count));
+//         ogl.bindTexture(.texture_2d, textures.get(texture_idx).id);
 
-        const uniform_name = texture_type.toString(engine.gpa);
-        defer engine.gpa.free(uniform_name);
+//         const uniform_name = texture_type.toString(engine.gpa);
+//         defer engine.gpa.free(uniform_name);
 
-        try self.shader.setUniform(uniform_name, @as(i32, @intCast(texture_count)));
+//         try self.shader.setUniform(uniform_name, @as(i32, @intCast(texture_count)));
 
-        texture_count += 1;
-    }
+//         texture_count += 1;
+//     }
 
-    try self.shader.setUniform("u_model", world);
-    try self.shader.setUniform("u_view", engine.camera.world_to_view);
-    try self.shader.setUniform("u_proj", engine.camera.view_to_clip);
+//     try self.shader.setUniform("u_model", world);
+//     try self.shader.setUniform("u_view", engine.camera.world_to_view);
+//     try self.shader.setUniform("u_proj", engine.camera.view_to_clip);
 
-    try self.shader.setUniform("u_base_color_factor", material.base_color_factor);
-    try self.shader.setUniform("u_specular_factor", material.specular_factor);
-    try self.shader.setUniform("u_shininess", material.shininess);
+//     try self.shader.setUniform("u_base_color_factor", material.base_color_factor);
+//     try self.shader.setUniform("u_specular_factor", material.specular_factor);
+//     try self.shader.setUniform("u_shininess", material.shininess);
 
-    try self.shader.setUniform("u_light_pos", [_]f32{ -2, 0, 0 });
-    try self.shader.setUniform("u_light_color", [_]f32{ 1, 1, 1 });
-    try self.shader.setUniform("u_ambient_color", [_]f32{ 0.0, 0, 0 });
+//     try self.shader.setUniform("u_light_pos", [_]f32{ -2, 0, 0 });
+//     try self.shader.setUniform("u_light_color", [_]f32{ 1, 1, 1 });
+//     try self.shader.setUniform("u_ambient_color", [_]f32{ 0.0, 0, 0 });
 
-    ogl.bindVertexArray(self.vao);
+//     ogl.bindVertexArray(self.vao);
 
-    ogl.drawElements(
-        .triangles,
-        @intCast(self.indices_count),
-        .unsigned_int,
-        0,
-    );
+//     ogl.drawElements(
+//         .triangles,
+//         @intCast(self.indices_count),
+//         .unsigned_int,
+//         0,
+//     );
 
-    ogl.bindVertexArray(.invalid);
-}
+//     ogl.bindVertexArray(.invalid);
+// }
 
 test {
     std.testing.refAllDecls(Self);

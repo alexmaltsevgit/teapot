@@ -52,6 +52,18 @@
             .url = "git+https://github.com/felixuxx/z-assimp.git#2b3fd24a0052a41b4d25708b325c30e9dc7b63d3",
             .hash = "zig_assimp-6.0.5--G7jvk2DAgA5kA71cD_hK0PW6JSrWqcG2VJH-7uAGZ3p",
         },
+        .interface = .{
+            .url = "git+https://github.com/nilslice/zig-interface#bf1bebe08ead447cc9899d42240b1d0bac831b43",
+            .hash = "interface-0.0.3-GFlWJ-rFAACj4WiBpbVFtsedY2Gk3d0Nzc8SP_o8OxZl",
+        },
+        .vulkan = .{
+            .url = "git+https://github.com/Snektron/vulkan-zig#f80632864d2354443ecad07d4cb0e549c6c80a09",
+            .hash = "vulkan-0.0.0-r7Ytx_6DAwDB1QJAbIew5IzR2PiiAtJENX5kdJHf449X",
+        },
+        .vulkan_headers = .{
+            .url = "git+https://github.com/KhronosGroup/Vulkan-Headers#b51f6b865c18fc5b33990d12f75e8dfd672cede6",
+            .hash = "N-V-__8AAGY0fgLehr5nql-j-Y4wCrKqEVNVmmdkjItBHbzV",
+        },
     },
     .paths = .{
         "build.zig",

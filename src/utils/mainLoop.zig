@@ -10,7 +10,8 @@ const engine = @import("../engine.zig");
 
 const Self = @This();
 
-models: std.ArrayList(engine.Model),
+renderer: engine.Renderer,
+model_repo: engine.ModelRepo,
 
 previous_time: f64,
 
@@ -18,18 +19,16 @@ fps_accum: u16 = 0,
 fps_time_accum: f32 = 0,
 
 pub fn init() !Self {
-    try zopengl.loadCoreProfile(glfw.getProcAddress, engine.Singletone.Window.gl_version_major, engine.Singletone.Window.gl_version_minor);
-    ogl.enable(.depth_test);
-    ogl.enable(.stencil_test);
-    ogl.enable(.cull_face);
+    var renderer_ogl = engine.Renderer.impls.RendererOgl.init();
+    try renderer_ogl.setup();
 
-    std.log.debug("{s}", .{ogl.getString(.version).?});
+    var model_repo_ogl = engine.ModelRepo.impls.ModelRepoOgl.init();
 
     var models = try std.ArrayList(engine.Model).initCapacity(engine.gpa, 1);
     errdefer models.deinit(engine.gpa);
 
-    const model: *engine.Model = models.addOneAssumeCapacity();
-    model.* = try engine.Model.init("res/chair/source/Daytime_Lighting_Scene.fbx");
+    // model.* = try engine.Model.init("res/chair/source/Daytime_Lighting_Scene.fbx");
+    // try engine.Renderer.impls.RendererOgl.prepareModel(model);
     // model.* = try engine.Model.init("res/Survival_BackPack_2.fbx");
     // model.* = try engine.Model.init("res/backpack.obj");
     // model.transform.scaleBy(0.01, 0.01, 0.01);
@@ -37,8 +36,11 @@ pub fn init() !Self {
 
     try glfw.setInputMode(engine.Singletone.Window.window, .cursor, .disabled);
 
+    try model_repo_ogl.load("res/chair/source/Daytime_Lighting_Scene.fbx");
+
     return .{
-        .models = models,
+        .renderer = engine.Renderer.Renderer.from(&renderer_ogl),
+        .model_repo = engine.ModelRepo.ModelRepo.from(&model_repo_ogl),
         .previous_time = glfw.getTime(),
     };
 }
@@ -75,7 +77,7 @@ pub fn cycle(self: *Self) !void {
     ogl.clear(.{ .color = true, .depth = true, .stencil = true });
 
     for (self.models.items) |*model| {
-        try model.draw();
+        try self.renderer.render(model);
     }
 
     const w = 10 * @as(f32, @floatFromInt(@intFromEnum(engine.Singletone.Keyboard.getKey(.w))));

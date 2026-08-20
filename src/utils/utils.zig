@@ -108,3 +108,43 @@ pub const SimpleProfiler = struct {
         std.log.info("[PROFILE] {s} :: {d}ms", .{ hint, self.checkpointUpdated() });
     }
 };
+
+pub fn interfaceFrom(comptime T: type) type {
+    const t = @typeInfo(T);
+    if (t != .@"struct") @compileError("Non-struct type passed into the function");
+
+    const @"struct" = t.@"struct";
+
+    comptime var fn_count = 0;
+    inline for (@"struct".decls) |decl| {
+        if (@typeInfo(@TypeOf(@field(T, decl.name))) == .Fn) {
+            fn_count += 1;
+        }
+    }
+
+    var new_decls: [fn_count]std.builtin.Type.Declaration = undefined;
+    var decl_idx = 0;
+
+    inline for (@"struct".decls) |decl| {
+        const member = @field(T, decl.name);
+        const member_info = @typeInfo(@TypeOf(member));
+
+        if (member_info != .@"fn") continue;
+
+        const function = member_info.@"fn";
+
+        const Wrapper = struct {
+            fn cb(comptime args: function.params) function.return_type.? {
+                @call(.auto, member, args);
+            }
+        };
+        _ = Wrapper; // autofix
+
+        new_decls[decl_idx] = .{
+            .name = decl.name,
+        };
+        decl_idx += 1;
+    }
+
+    return @Struct(.auto, null, new_decls, .{"fn"} ** new_decls.len, .{.{}} ** new_decls.len);
+}

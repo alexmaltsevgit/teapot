@@ -9,6 +9,8 @@ pub const Node = @import("utils/node.zig");
 pub const ShaderProgram = @import("utils/shaderProgram.zig");
 pub const Texture = @import("utils/texture.zig");
 pub const Transform = @import("utils/transform.zig");
+pub const Renderer = @import("render/renderer.zig");
+pub const ModelRepo = @import("model/ModelRepo.zig");
 pub const utils = @import("utils/utils.zig");
 
 pub var io: std.Io = undefined;
